@@ -148,7 +148,7 @@ models:
     tests:
       # Stellt die korrekte Granularität der Tabelle sicher
       - unique:
-          column_names:
+          columns: # Geändert von 'column_names' zu 'columns'
             - month
             - location
             - movie_id
@@ -187,8 +187,6 @@ models:
           - not_null
           # Benutzerdefinierter Test (singular): Stellt sicher, dass der Wert nicht negativ ist.
           - is_positive
-
-
 
 
 
