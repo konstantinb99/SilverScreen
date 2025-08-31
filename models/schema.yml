@@ -1,0 +1,193 @@
+version: 2
+
+sources:
+  - name: silverscreen
+    description: "Rohdaten-Quelle für das Silver Screen Projekt aus Snowflake."
+    database: "{{ target.database }}" # Nutzt die Datenbank aus dem dbt-Profil
+    schema: PUBLIC
+    tables:
+      - name: movie_catalogue
+        description: "Enthält detaillierte Informationen über die im Jahr 2024 veröffentlichten und von 'Silver Screen' gemieteten Filme."
+        columns:
+          - name: movie_id
+            description: "Eindeutiger Bezeichner für jeden Film."
+            tests:
+              - unique
+              - not_null
+          - name: movie_title
+            description: "Der Titel des Films."
+          - name: release_date
+            description: "Das offizielle Erscheinungsdatum des Films im YYYY-MM-DD-Format."
+          - name: genre
+            description: "Das Genre des Films."
+          - name: country
+            description: "Das Land, in dem der Film produziert wurde."
+          - name: studio
+            description: "Das Produktionsstudio, das für den Film verantwortlich ist."
+          - name: budget
+            description: "Das Produktionsbudget des Films, typischerweise in Dollar."
+          - name: director
+            description: "Der Regisseur des Films."
+          - name: rating
+            description: "Die Altersfreigabe des Films (z.B. PG, R)."
+          - name: minutes
+            description: "Die Laufzeit des Films in Minuten."
+
+      - name: invoices
+        description: "Enthält die Rechnungen, die für die Vorführung eines bestimmten Films an verschiedenen Kinostandorten in verschiedenen Monaten ausgestellt wurden."
+        columns:
+          - name: movie_id
+            description: "Ein eindeutiger Bezeichner für jeden Film."
+            tests:
+              - not_null
+          - name: invoice_id
+            description: "Ein eindeutiger Bezeichner für jede Rechnung."
+            tests:
+              - unique
+              - not_null
+          - name: month
+            description: "Der Monat, in dem die Rechnung ausgestellt wurde, im Format YYYY-MM-DD."
+          - name: location_id
+            description: "Der Bezeichner des Kinostandorts."
+          - name: studio
+            description: "Das Produktionsstudio, das für den Film verantwortlich ist."
+          - name: release_date
+            description: "Das offizielle Erscheinungsdatum des Films."
+          - name: weekly_price
+            description: "Der wöchentliche Preis, der für die Vorführung des Films am jeweiligen Standort berechnet wird."
+          - name: total_invoice_sum
+            description: "Die Gesamtsumme der Rechnung für den Monat."
+
+      - name: nj_001
+        description: "Enthält detaillierte Informationen zu allen Transaktionen am Standort Nr. 1."
+        columns:
+          - name: transaction_id
+            description: "Ein eindeutiger alphanumerischer Bezeichner, der jeder Transaktion zugewiesen ist."
+            tests:
+              - unique
+              - not_null
+          - name: movie_id
+            description: "Ein eindeutiger Bezeichner für den Film, der in der Transaktion angesehen wird."
+            tests:
+              - not_null
+
+      - name: nj_002
+        description: "Enthält tägliche Verkaufsinformationen vom Standort Nr. 2."
+        columns:
+          - name: date
+            description: "Das Datum der Ticketverkaufstransaktion."
+          - name: movie_id
+            description: "Ein eindeutiger Bezeichner für den verkauften Film."
+            tests:
+              - not_null
+
+      - name: nj_003
+        description: "Verfolgt einzelne Käufe am Standort Nr. 3 und deckt verschiedene Produkttypen ab."
+        columns:
+          - name: transaction_id
+            description: "Ein eindeutiger alphanumerischer Bezeichner, der jeder Transaktion zugewiesen ist."
+            tests:
+              - unique
+              - not_null
+          - name: product_type
+            description: "Die Art des in der Transaktion beteiligten Produkts (Ticket, Getränk, Snack usw.)."
+          - name: details
+            description: "Bei Tickets gibt dies den angesehenen Film an, repräsentiert durch die movie_id."
+
+models:
+  - name: stg_movie_catalogue
+    description: "Bereinigtes Staging-Modell für den Filmkatalog. Fehlende Genres werden durch 'Unknown' ersetzt."
+    columns:
+      - name: movie_id
+        description: "Eindeutiger Bezeichner für jeden Film."
+        tests:
+          - unique
+          - not_null
+      - name: genre
+        description: "Das Genre des Films. NULL-Werte werden durch 'Unknown' ersetzt."
+        tests:
+          - not_null
+
+  - name: stg_invoices
+    description: "Bereinigtes Staging-Modell für Rechnungen mit umbenannten und gecasteten Spalten."
+    columns:
+      - name: invoice_id
+        description: "Eindeutiger Bezeichner für jede Rechnung."
+        tests:
+          - unique
+          - not_null
+      - name: movie_id
+        description: "Fremdschlüssel zum Film."
+        tests:
+          - not_null
+      - name: location_id
+        description: "Der Standort, für den die Rechnung ausgestellt wurde."
+      - name: month
+        description: "Der Monat der Rechnung, auf den ersten des Monats normalisiert."
+      - name: rental_cost
+        description: "Die gesamten Mietkosten für den Film in diesem Monat und an diesem Ort."
+
+  - name: int_locations_unioned
+    description: "Vereinheitlicht die aggregierten monatlichen Ticketverkäufe und Einnahmen von allen drei Standorten in einer einzigen Tabelle."
+    columns:
+      - name: month
+        description: "Der Monat der aggregierten Daten, auf den ersten des Monats normalisiert."
+        tests:
+          - not_null
+      - name: location
+        description: "Der Standort, von dem die Daten stammen (NJ_001, NJ_002, NJ_003)."
+        tests:
+          - not_null
+      - name: movie_id
+        description: "Der Film, für den die Daten aggregiert wurden."
+        tests:
+          - not_null
+      - name: tickets_sold
+        description: "Die Gesamtanzahl der verkauften Tickets für den Film in diesem Monat und an diesem Ort."
+      - name: revenue
+        description: "Der Gesamtumsatz aus Ticketverkäufen für den Film in diesem Monat und an diesem Ort."
+
+  - name: fct_monthly_movie_performance
+    description: "Finale Faktentabelle, die die monatliche Leistung (Mietkosten, Ticketverkäufe, Umsatz) für jeden Film an allen drei Standorten zusammenfasst."
+    tests:
+      # Stellt die korrekte Granularität der Tabelle sicher
+      - unique:
+          column_names:
+            - month
+            - location
+            - movie_id
+    columns:
+      - name: movie_id
+        description: "Eindeutiger Bezeichner des Films. Fremdschlüssel zum Filmkatalog."
+        tests:
+          - not_null
+      - name: movie_title
+        description: "Der Titel des Films."
+      - name: genre
+        description: "Das Genre des Films."
+      - name: studio
+        description: "Das Produktionsstudio des Films."
+      - name: month
+        description: "Der Monat der Leistungsdaten (z.B. '2024-06-01')."
+        tests:
+          - not_null
+      - name: location
+        description: "Der Standort des Kinos (z.B. 'NJ_001')."
+        tests:
+          - not_null
+      - name: rental_cost
+        description: "Die Mietkosten für den Film in diesem Monat und an diesem Ort."
+        tests:
+          - not_null
+      - name: tickets_sold
+        description: "Die Gesamtzahl der verkauften Tickets."
+        tests:
+          - not_null
+          # Benutzerdefinierter Test (singular): Stellt sicher, dass der Wert nicht negativ ist.
+          - is_positive
+      - name: revenue
+        description: "Der Gesamtumsatz aus Ticketverkäufen."
+        tests:
+          - not_null
+          # Benutzerdefinierter Test (singular): Stellt sicher, dass der Wert nicht negativ ist.
+          - is_positive
