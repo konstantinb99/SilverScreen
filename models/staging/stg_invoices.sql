@@ -11,7 +11,7 @@ with source_data as (
         "Release_Date"::date as "release_date",
         "Weekly_price" as "weekly_price",
         "Total_invoice_sum" as "rental_cost"
-    from {{ source('silverscreen', 'INVOICES') }}
+    from {{ source('invoices') }}
 
 )
 

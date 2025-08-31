@@ -6,7 +6,7 @@ sources:
     database: SILVERSCREEN
     schema: PUBLIC 
     tables:
-      - name: movie_catalogue
+      - name: MOVIE_CATALOGUE
         description: "Enthält detaillierte Informationen über Filme, die 2024 veröffentlicht und von 'Silver Screen' gemietet wurden."
         columns:
           - name: movie_id
@@ -33,7 +33,7 @@ sources:
           - name: minutes
             description: "Die Laufzeit des Films in Minuten."
 
-      - name: invoices
+      - name: INVOICES
         description: "Rechnungen für die Vorführung eines bestimmten Films an verschiedenen Standorten."
         columns:
           - name: movie_id
@@ -56,7 +56,7 @@ sources:
           - name: Total_invoice_sum
             description: "Die Gesamtsumme der Rechnung für die Woche."
 
-      - name: nj_001
+      - name: NJ_001
         description: "Detaillierte Transaktionsdaten vom Standort NJ_001."
         columns:
           - name: timestamp
@@ -79,7 +79,7 @@ sources:
           - name: is_3D
             description: "Ein boolescher Wert, der angibt, ob der Film in 3D gezeigt wurde."
 
-      - name: nj_002
+      - name: NJ_002
         description: "Tägliche aggregierte Verkaufsdaten vom Standort NJ_002."
         columns:
           - name: date
@@ -93,7 +93,7 @@ sources:
           - name: total_earned
             description: "Gesamteinnahmen aus Ticketverkäufen an diesem Datum."
 
-      - name: nj_003
+      - name: NJ_003
         description: "Einzelne Kauftransaktionen vom Standort NJ_003, einschließlich Tickets und anderer Produkte."
         columns:
           - name: timestamp
@@ -113,3 +113,4 @@ sources:
             description: "Der Preis pro Produkteinheit."
           - name: total_value
             description: "Der in der Transaktion ausgegebene Gesamtbetrag."
+
