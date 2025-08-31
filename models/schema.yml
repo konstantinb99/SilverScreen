@@ -43,8 +43,7 @@ sources:
           - name: invoice_id
             description: "Ein eindeutiger Bezeichner für jede Rechnung."
             tests:
-              - unique
-              - not_null
+              - not_null # Der 'unique' Test wurde von hier entfernt.
           - name: month
             description: "Der Monat, in dem die Rechnung ausgestellt wurde, im Format YYYY-MM-DD."
           - name: location_id
@@ -191,3 +190,4 @@ models:
           - not_null
           # Benutzerdefinierter Test (singular): Stellt sicher, dass der Wert nicht negativ ist.
           - is_positive
+

@@ -2,6 +2,7 @@
 
 -- Bereitet Rechnungsdaten für die Analyse vor.
 -- Das Monat wird auf den ersten Tag des Monats normalisiert und Spalten werden für Klarheit umbenannt.
+-- Duplikate basierend auf invoice_id werden entfernt.
 
 WITH source AS (
 
@@ -14,6 +15,14 @@ WITH source AS (
     FROM
         {{ source('silverscreen', 'invoices') }}
 
+),
+
+deduplicated AS (
+    SELECT
+        *,
+        -- Weist jeder Zeile innerhalb einer Gruppe von identischen invoice_ids eine eindeutige Nummer zu.
+        ROW_NUMBER() OVER(PARTITION BY invoice_id ORDER BY month DESC) as rn
+    FROM source
 )
 
 SELECT
@@ -25,4 +34,7 @@ SELECT
     -- Benennt total_invoice_sum in rental_cost um, um die Bedeutung zu verdeutlichen.
     total_invoice_sum AS rental_cost
 FROM
-    source
+    deduplicated
+-- Wählt nur die erste Zeile für jede invoice_id aus und entfernt so die Duplikate.
+WHERE rn = 1
+
