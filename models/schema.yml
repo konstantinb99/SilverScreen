@@ -146,9 +146,9 @@ models:
   - name: fct_monthly_movie_performance
     description: "Finale Faktentabelle, die die monatliche Leistung (Mietkosten, Ticketverkäufe, Umsatz) für jeden Film an allen drei Standorten zusammenfasst."
     tests:
-      # Stellt die korrekte Granularität der Tabelle sicher
-      - unique:
-          columns: # Geändert von 'column_names' zu 'columns'
+      # Stellt die korrekte Granularität der Tabelle mit einem Test aus dem dbt_utils-Paket sicher.
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
             - month
             - location
             - movie_id
@@ -187,6 +187,7 @@ models:
           - not_null
           # Benutzerdefinierter Test (singular): Stellt sicher, dass der Wert nicht negativ ist.
           - is_positive
+
 
 
 
