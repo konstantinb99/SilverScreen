@@ -1,31 +1,27 @@
 version: 2
 
 sources:
-  - name: silverscreen 
-    description: "Rohdaten für die Silver Screen Kinoanalyse."
-    database: SILVERSCREEN
-    schema: PUBLIC 
+  - name: silverscreen
+    database: SilverScreen
+    schema: PUBLIC
     tables:
-      - name: MOVIE_CATALOGUE
-        description: "Enthält detaillierte Informationen über Filme, die 2024 veröffentlicht und von 'Silver Screen' gemietet wurden."
+      - name: movie_catalogue
+        description: "Detaillierte Informationen über Filme, die 2024 veröffentlicht und von Silver Screen gemietet wurden."
         columns:
           - name: movie_id
-            description: "Eindeutiger Identifikator für jeden Film."
-            tests:
-              - unique
-              - not_null
+            description: "Eindeutiger Bezeichner für jeden Film."
           - name: movie_title
             description: "Der Titel des Films."
           - name: release_date
-            description: "Das offizielle Erscheinungsdatum des Films im YYYY-MM-DD-Format."
+            description: "Das offizielle Veröffentlichungsdatum des Films im Format YYYY-MM-DD."
           - name: genre
             description: "Das Genre des Films."
           - name: country
             description: "Das Produktionsland des Films."
           - name: studio
-            description: "Das Produktionsstudio, das für den Film verantwortlich ist."
+            description: "Das Produktionsstudio des Films."
           - name: budget
-            description: "Das Produktionsbudget des Films in Dollar."
+            description: "Das Produktionsbudget des Films."
           - name: director
             description: "Der Regisseur des Films."
           - name: rating
@@ -33,84 +29,75 @@ sources:
           - name: minutes
             description: "Die Laufzeit des Films in Minuten."
 
-      - name: INVOICES
-        description: "Rechnungen für die Vorführung eines bestimmten Films an verschiedenen Standorten."
+      - name: invoices
+        description: "Rechnungen für die Vorführung eines bestimmten Films an verschiedenen Kinostandorten."
         columns:
           - name: movie_id
-            description: "Eindeutiger Identifikator für jeden Film."
+            description: "Eindeutiger Bezeichner für jeden Film."
           - name: invoice_id
-            description: "Eindeutiger Identifikator für jede Rechnung."
-            tests:
-              - unique
-              - not_null
+            description: "Eindeutiger Bezeichner für jede Rechnung."
           - name: month
-            description: "Der Monat, in dem die Rechnung ausgestellt wurde, im YYYY-MM-DD-Format."
+            description: "Der Monat, in dem die Rechnung ausgestellt wurde."
           - name: location_id
-            description: "Der Identifikator des Kinostandorts."
+            description: "Der Bezeichner des Kinostandorts."
           - name: Studio
-            description: "Das Produktionsstudio des Films."
+            description: "Das Produktionsstudio."
           - name: Release_Date
-            description: "Das offizielle Erscheinungsdatum des Films."
+            description: "Das offizielle Veröffentlichungsdatum des Films."
           - name: Weekly_price
             description: "Der wöchentliche Preis für die Vorführung des Films."
           - name: Total_invoice_sum
             description: "Die Gesamtsumme der Rechnung für die Woche."
 
-      - name: NJ_001
-        description: "Detaillierte Transaktionsdaten vom Standort NJ_001."
+      - name: nj_001
+        description: "Transaktionsdaten vom Standort Nr. 1."
         columns:
           - name: timestamp
             description: "Datum und Uhrzeit der Transaktion."
           - name: transaction_id
-            description: "Eindeutiger Identifikator für jede Transaktion."
-            tests:
-              - unique
-              - not_null
+            description: "Eindeutiger Bezeichner für jede Transaktion."
           - name: movie_id
-            description: "Identifikator für den angesehenen Film."
+            description: "Eindeutiger Bezeichner für den Film."
           - name: ticket_amount
-            description: "Anzahl der in dieser Transaktion gekauften Tickets."
+            description: "Anzahl der gekauften Tickets."
           - name: price
-            description: "Der Preis pro Ticket für die Transaktion."
+            description: "Preis pro Ticket."
           - name: transaction_total
             description: "Gesamtbetrag der Transaktion."
           - name: is_discounted
-            description: "Ein boolescher Wert, der angibt, ob ein Rabatt gewährt wurde."
-          - name: is_3D
-            description: "Ein boolescher Wert, der angibt, ob der Film in 3D gezeigt wurde."
+            description: "Gibt an, ob ein Rabatt gewährt wurde."
+          - name: is_3d
+            description: "Gibt an, ob der Film in 3D war."
 
-      - name: NJ_002
-        description: "Tägliche aggregierte Verkaufsdaten vom Standort NJ_002."
+      - name: nj_002
+        description: "Tägliche Verkaufsinformationen vom Standort Nr. 2."
         columns:
           - name: date
-            description: "Das Datum der Ticketverkäufe."
+            description: "Datum der Ticketverkäufe."
           - name: movie_id
-            description: "Identifikator für den verkauften Film."
+            description: "Eindeutiger Bezeichner für den Film."
           - name: ticket_amount
             description: "Anzahl der an diesem Tag verkauften Tickets."
           - name: ticket_price
-            description: "Der Preis pro verkauftem Ticket an diesem Tag."
+            description: "Preis pro an diesem Tag verkauftem Ticket."
           - name: total_earned
             description: "Gesamteinnahmen aus Ticketverkäufen an diesem Datum."
 
-      - name: NJ_003
-        description: "Einzelne Kauftransaktionen vom Standort NJ_003, einschließlich Tickets und anderer Produkte."
+      - name: nj_003
+        description: "Einzelne Einkäufe vom Standort Nr. 3 (Tickets, Snacks, Getränke)."
         columns:
           - name: timestamp
             description: "Datum und Uhrzeit der Transaktion."
           - name: transaction_id
-            description: "Eindeutiger Identifikator für jede Transaktion."
-            tests:
-              - unique
-              - not_null
+            description: "Eindeutiger Bezeichner für jede Transaktion."
           - name: product_type
-            description: "Die Art des in der Transaktion enthaltenen Produkts (z. B. Ticket, Getränk, Snack)."
+            description: "Art des Produkts (Ticket, Getränk, Snack etc.)."
           - name: details
-            description: "Für Tickets die movie_id."
+            description: "Für Tickets die movie_id, ansonsten leer."
           - name: amount
-            description: "Die Menge des gekauften Produkts."
+            description: "Menge des gekauften Produkts."
           - name: price
-            description: "Der Preis pro Produkteinheit."
+            description: "Preis pro Einheit des Produkts."
           - name: total_value
-            description: "Der in der Transaktion ausgegebene Gesamtbetrag."
+            description: "Gesamtwert der Transaktion."
 

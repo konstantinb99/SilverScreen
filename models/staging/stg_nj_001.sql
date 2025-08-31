@@ -3,26 +3,26 @@
 with source_data as (
 
     select
-        "timestamp"::date as "transaction_date",
-        "transaction_id",
-        "movie_id",
-        "ticket_amount",
-        "price" as "ticket_price",
-        "transaction_total" as "revenue",
-        "is_discounted",
-        "is_3D"
-    from {{ source('silverscreen', 'NJ_001') }}
+        timestamp::date as transaction_date,
+        transaction_id,
+        movie_id,
+        ticket_amount,
+        price as ticket_price,
+        transaction_total as revenue,
+        is_discounted,
+        is_3d
+    from {{ source('silverscreen', 'nj_001') }}
 
 )
 
 select
-    "transaction_date",
-    "transaction_id",
-    "movie_id",
-    "ticket_amount",
-    "ticket_price",
-    "revenue",
-    "is_discounted",
-    "is_3D"
+    transaction_date,
+    transaction_id,
+    movie_id,
+    ticket_amount,
+    ticket_price,
+    revenue,
+    is_discounted,
+    is_3d
 from source_data
 

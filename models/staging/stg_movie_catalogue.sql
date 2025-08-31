@@ -1,28 +1,32 @@
--- models/staging/stg_invoices.sql
+-- models/staging/stg_movie_catalogue.sql
 
 with source_data as (
 
     select
-        "movie_id",
-        "invoice_id",
-        "month"::date as "invoice_month",
-        "location_id",
-        "Studio" as "studio",
-        "Release_Date"::date as "release_date",
-        "Weekly_price" as "weekly_price",
-        "Total_invoice_sum" as "rental_cost"
-    from {{ source('silverscreen', 'INVOICES') }}
+        movie_id,
+        movie_title,
+        release_date::date as release_date,
+        genre,
+        country,
+        studio,
+        budget,
+        director,
+        rating,
+        minutes
+    from {{ source('silverscreen', 'movie_catalogue') }}
 
 )
 
 select
-    "movie_id",
-    "invoice_id",
-    "invoice_month",
-    "location_id",
-    "studio",
-    "release_date",
-    "weekly_price",
-    "rental_cost"
+    movie_id,
+    movie_title,
+    release_date,
+    coalesce(genre, 'Unknown') as genre, -- Ersetzt NULL-Werte bei Genre
+    country,
+    studio,
+    budget,
+    director,
+    rating,
+    minutes
 from source_data
 
