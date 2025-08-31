@@ -151,10 +151,11 @@ models:
     tests:
       # Stellt die korrekte Granularität der Tabelle sicher
       - unique:
-          column_names:
-            - month
-            - location
-            - movie_id
+          arguments:
+            column_names:
+              - month
+              - location
+              - movie_id
     columns:
       - name: movie_id
         description: "Eindeutiger Bezeichner des Films. Fremdschlüssel zum Filmkatalog."
