@@ -148,10 +148,11 @@ models:
     tests:
       # Stellt die korrekte Granularität der Tabelle mit einem Test aus dem dbt_utils-Paket sicher.
       - dbt_utils.unique_combination_of_columns:
-          combination_of_columns:
-            - month
-            - location
-            - movie_id
+          arguments: # Hinzugefügt, um der modernen Syntax zu entsprechen
+            combination_of_columns:
+              - month
+              - location
+              - movie_id
     columns:
       - name: movie_id
         description: "Eindeutiger Bezeichner des Films. Fremdschlüssel zum Filmkatalog."
@@ -187,6 +188,7 @@ models:
           - not_null
           # Benutzerdefinierter Test (singular): Stellt sicher, dass der Wert nicht negativ ist.
           - is_positive
+
 
 
 
