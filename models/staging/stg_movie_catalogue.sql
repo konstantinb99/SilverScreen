@@ -18,7 +18,7 @@ WITH source AS (
         rating,
         minutes
     FROM
-        {{ source('silver_screen', 'movie_catalogue') }}
+        {{ source('silverscreen', 'movie_catalogue') }}
 
 ),
 
