@@ -112,7 +112,9 @@ models:
     columns:
       - name: invoice_id
         description: "Eindeutiger Bezeichner für jede Rechnung."
-        # Die Tests hier wurden entfernt, da die Spalte im finalen Modell nicht mehr enthalten ist.
+        tests:
+          - unique
+          - not_null
       - name: movie_id
         description: "Fremdschlüssel zum Film."
         tests:
@@ -189,4 +191,6 @@ models:
           - not_null
           # Benutzerdefinierter Test (singular): Stellt sicher, dass der Wert nicht negativ ist.
           - is_positive
+
+
 
