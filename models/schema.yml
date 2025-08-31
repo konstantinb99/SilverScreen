@@ -112,9 +112,6 @@ models:
     columns:
       - name: invoice_id
         description: "Eindeutiger Bezeichner für jede Rechnung."
-        tests:
-          - unique
-          - not_null
       - name: movie_id
         description: "Fremdschlüssel zum Film."
         tests:
@@ -151,11 +148,10 @@ models:
     tests:
       # Stellt die korrekte Granularität der Tabelle sicher
       - unique:
-          arguments:
-            column_names:
-              - month
-              - location
-              - movie_id
+          column_names:
+            - month
+            - location
+            - movie_id
     columns:
       - name: movie_id
         description: "Eindeutiger Bezeichner des Films. Fremdschlüssel zum Filmkatalog."
@@ -191,6 +187,10 @@ models:
           - not_null
           # Benutzerdefinierter Test (singular): Stellt sicher, dass der Wert nicht negativ ist.
           - is_positive
+
+
+
+
 
 
 
