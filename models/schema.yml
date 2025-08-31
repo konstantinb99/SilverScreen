@@ -112,9 +112,7 @@ models:
     columns:
       - name: invoice_id
         description: "Eindeutiger Bezeichner für jede Rechnung."
-        tests:
-          - unique
-          - not_null
+        # Die Tests hier wurden entfernt, da die Spalte im finalen Modell nicht mehr enthalten ist.
       - name: movie_id
         description: "Fremdschlüssel zum Film."
         tests:
